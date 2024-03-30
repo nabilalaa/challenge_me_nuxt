@@ -1,4 +1,5 @@
-<!-- <template>
+<template>
+	<!--
 	<header
 		class="w-full bg-top bg-cover relative"
 		style="background-image: url('{{ tournament.game.photo_game.url }}')"
@@ -192,5 +193,5 @@
 				</div>
 			</div>
 		</div>
-	</section>
-</template> -->
+	</section> -->
+</template>
