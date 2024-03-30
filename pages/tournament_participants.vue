@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 	<header
 		class="w-full bg-top bg-cover relative"
 		style="background-image: url('{{ tournament.game.photo_game.url }}')"
@@ -27,7 +27,7 @@
 				<button
 					class="text-white bg-maincolor w-full max-w-[200px] capitalize block font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
 				>
-					<!-- {{ message }} -->
+					{{ message }} 
 				</button>
 			</form>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -73,7 +73,7 @@
 										<p
 											class="text-sm font-medium text-gray-900 truncate dark:text-white"
 										>
-											<!-- {{ player.name }} -->
+											 {{ player.name }} 
 										</p>
 									</div>
 								</div>
@@ -170,7 +170,7 @@
 							role="tabpanel"
 							aria-labelledby="stats-tab"
 						>
-							<!-- {{ tournament.description }} -->
+							 {{ tournament.description }} 
 						</div>
 						<div
 							class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
@@ -178,7 +178,7 @@
 							role="tabpanel"
 							aria-labelledby="about-tab"
 						>
-							<!-- {{ tournament.prizes }} -->
+							 {{ tournament.prizes }} 
 						</div>
 						<div
 							class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
@@ -186,11 +186,11 @@
 							role="tabpanel"
 							aria-labelledby="faq-tab"
 						>
-							<!-- {{ tournament.notes }} -->
+							 {{ tournament.notes }} 
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</section>
-</template>
+</template> -->
