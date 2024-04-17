@@ -91,7 +91,7 @@
 							Username
 						</label>
 						<input
-							v-model="user_sign_in.username"
+							v-model="user_sign_up.username"
 							type="text"
 							name="username"
 							id="username"
@@ -135,7 +135,6 @@
 							placeholder="•••••••••"
 							required
 						/>
-						{{ user_sign_up.password }}
 					</div>
 					<div>
 						<label
@@ -157,6 +156,7 @@
 					<button @click.prevent="sign_up" class="button capitalize text-white">
 						send
 					</button>
+					{{ user_sign_up }}
 				</form>
 				<div
 					v-if="!user"

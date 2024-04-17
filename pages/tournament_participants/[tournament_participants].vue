@@ -1,18 +1,15 @@
 <template>
-	<!--
-	<header
-		class="w-full bg-top bg-cover relative"
-		style="background-image: url('{{ tournament.game.photo_game.url }}')"
-	>
+	<NuxtPage />
+
+	<header class="w-full bg-top bg-cover relative">
 		<div class="overlay w-full h-full bg-secondarycolor bg-opacity-50">
-			<section class="about p-8 w-full">
+			<section class="prizes p-8 w-full">
 				<div class="container">
 					<div class="flex justify-center items-center">
 						<img
 							width=""
 							height=""
 							class="object-cover sm:w-[300px] sm:h-[300px]"
-							src="{{ tournament.game.logo_game.url }}"
 							alt=""
 						/>
 					</div>
@@ -22,15 +19,10 @@
 	</header>
 	<section class="py-28">
 		<div class="container">
-			<form method="post">
-				{% csrf_token %}
-
-				<button
-					class="text-white bg-maincolor w-full max-w-[200px] capitalize block font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-				>
-					{{ message }} 
-				</button>
-			</form>
+			<button
+				@click="addPlayer"
+				class="text-white bg-maincolor w-full max-w-[200px] capitalize block font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
+			></button>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<div
 					class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700"
@@ -45,8 +37,7 @@
 							role="list"
 							class="divide-y divide-gray-200 dark:divide-gray-700"
 						>
-							{% for player in players %}
-							<li class="py-3 sm:py-4">
+							<li v-for="player in players" :key="player" class="py-3 sm:py-4">
 								<div class="flex items-center space-x-4">
 									<div class="flex-shrink-0">
 										<svg
@@ -60,7 +51,6 @@
 												d="M7 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm2 1H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"
 											/>
 										</svg>
-										{% comment %}
 										<img
 											width=""
 											height=""
@@ -68,45 +58,34 @@
 											src="/docs/images/people/profile-picture-1.jpg"
 											alt="Neil image"
 										/>
-										{% endcomment %}
 									</div>
 									<div class="flex-1 min-w-0">
 										<p
 											class="text-sm font-medium text-gray-900 truncate dark:text-white"
 										>
-											 {{ player.name }} 
+											{{ player.name }}
 										</p>
 									</div>
 								</div>
 							</li>
-							{%empty%}
 
-							<h3>no subs</h3>
-							{% endfor %}
+							<h3 v-if="!players">no subs</h3>
 						</ul>
-						{% if players.number > 1 %}
 
 						<ul class="flex w-40 border-0 m-auto -space-x-px text-sm p-4">
-							{% if players.has_previous %}
-
 							<li>
 								<a
-									href="?page={{ players.previous_page_number }}"
 									class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 									>Previous</a
 								>
 							</li>
-							{% endif %} {% if players.has_next %}
 							<li>
 								<a
-									href="?page={{ players.next_page_number }}"
 									class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 									>Next</a
 								>
 							</li>
-							{% endif %}
 						</ul>
-						{% endif %}
 					</div>
 				</div>
 				<div
@@ -123,11 +102,11 @@
 					>
 						<li class="w-full">
 							<button
-								id="stats-tab"
-								data-tabs-target="#stats"
+								id="description-tab"
+								data-tabs-target="#description"
 								type="button"
 								role="tab"
-								aria-controls="stats"
+								aria-controls="description"
 								aria-selected="true"
 								class="inline-block w-full hover:text-gray-500 target:text-maincolor focus:text-maincolor text-gray-600 p-4 rounded-tl-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
 							>
@@ -136,11 +115,11 @@
 						</li>
 						<li class="w-full">
 							<button
-								id="about-tab"
-								data-tabs-target="#about"
+								id="prizes-tab"
+								data-tabs-target="#prizes"
 								type="button"
 								role="tab"
-								aria-controls="about"
+								aria-controls="prizes"
 								aria-selected="false"
 								class="inline-block hover:text-gray-500 focus:text-maincolor text-gray-600 w-full p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
 							>
@@ -149,11 +128,11 @@
 						</li>
 						<li class="w-full">
 							<button
-								id="faq-tab"
-								data-tabs-target="#faq"
+								id="notes-tab"
+								data-tabs-target="#notes"
 								type="button"
 								role="tab"
-								aria-controls="faq"
+								aria-controls="notes"
 								aria-selected="false"
 								class="inline-block hover:text-gray-500 focus:text-maincolor text-gray-600 w-full p-4 rounded-tr-lg bg-gray-50 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:hover:bg-gray-600"
 							>
@@ -166,32 +145,69 @@
 						class="border-t border-gray-200 dark:border-gray-600"
 					>
 						<div
-							class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
-							id="stats"
+							class="p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
+							id="description"
 							role="tabpanel"
-							aria-labelledby="stats-tab"
+							aria-labelledby="description-tab"
 						>
-							 {{ tournament.description }} 
+							{{ tournament.description }}
 						</div>
 						<div
 							class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
-							id="about"
+							id="prizes"
 							role="tabpanel"
-							aria-labelledby="about-tab"
+							aria-labelledby="prizes-tab"
 						>
-							 {{ tournament.prizes }} 
+							{{ tournament.prizes }}
 						</div>
 						<div
 							class="hidden p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
-							id="faq"
+							id="notes"
 							role="tabpanel"
-							aria-labelledby="faq-tab"
+							aria-labelledby="notes-tab"
 						>
-							 {{ tournament.notes }} 
+							{{ tournament.notes }}
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section> -->
+	</section>
 </template>
+
+<script setup>
+console.log(useRoute());
+const user = useSupabaseUser();
+console.log(user.value);
+const tournament = ref();
+const players = ref();
+
+await $fetch("/api/tournaments").then((response) => {
+	console.log(response);
+
+	tournament.value = response.tournaments[0];
+});
+
+await $fetch("/api/players").then((response) => {
+	console.log(response.players);
+
+	// response.filter((ele) => {
+	// 	ele.tou;
+	// });
+
+	players.value = response.players;
+});
+
+// console.log(user.value)
+async function addPlayer() {
+	await $fetch("/api/players", {
+		method: "POST",
+		body: {
+			name: user.value.email,
+			tournament_id: tournament.value.id,
+		},
+	}).then((response) => {
+		console.log(response);
+	});
+}
+</script>

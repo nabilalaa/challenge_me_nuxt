@@ -45,8 +45,9 @@
 							Here are the biggest enterprise technology acquisitions of 2021 so
 							far, in reverse chronological order.
 						</p>
-						<a
-							href=""
+						{{ tournament.notes }}
+						<NuxtLink
+							:to="'/tournament_participants/ ' + tournament.name"
 							class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-maincolor rounded-lg hover:bg-secondarycolor focus:ring-4 focus:outline-none focus:ring-thirdcolor dark:bg-blue-600 dark:hover:bg-maincolor dark:focus:ring-secbg-secondarycolor"
 						>
 							Read more<svg
@@ -64,7 +65,7 @@
 									d="M1 5h12m0 0L9 1m4 4L9 9"
 								/>
 							</svg>
-						</a>
+						</NuxtLink>
 					</div>
 				</div>
 			</div>
@@ -75,10 +76,12 @@
 				>
 			</div>
 		</div>
+		<!-- <NuxtPage /> -->
 	</section>
 </template>
 
 <script setup>
+console.log(useRouter());
 const user = useSupabaseUser();
 console.log(user.value);
 if (user.value == null) {
@@ -87,16 +90,21 @@ if (user.value == null) {
 const runtimeConfig = useRuntimeConfig();
 
 const tournaments = ref([]);
-const game_name = useRoute().params.tournaments;
+const game_name = useRoute().params.tournament;
 const game = ref([]);
+console.log(game.value);
+console.log(game_name);
 await $fetch("/api/games").then((response) => {
 	var getgame = response.games.find((g) => {
-		return game_name == g.name;
+		console.log(game_name, g.name);
+		return game_name === g.name;
 	});
 	game.value = getgame;
 });
 
 await $fetch("/api/tournaments").then((response) => {
 	console.log(response.tournaments);
+
+	tournaments.value = response.tournaments;
 });
 </script>
