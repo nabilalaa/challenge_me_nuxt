@@ -55,7 +55,7 @@
 											width=""
 											height=""
 											class="w-8 h-8 rounded-full"
-											src="/docs/images/people/profile-picture-1.jpg"
+											src=""
 											alt="Neil image"
 										/>
 									</div>

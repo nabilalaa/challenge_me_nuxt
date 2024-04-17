@@ -99,7 +99,6 @@
 							placeholder="John"
 							required
 						/>
-						{{ user_sign_up.username }}
 					</div>
 					<div class="mb-6">
 						<label
@@ -156,7 +155,6 @@
 					<button @click.prevent="sign_up" class="button capitalize text-white">
 						send
 					</button>
-					{{ user_sign_up }}
 				</form>
 				<div
 					v-if="!user"
