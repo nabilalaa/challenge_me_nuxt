@@ -1,5 +1,5 @@
 <template>
-	<NuxtPage />
+	<!-- <NuxtPage /> -->
 
 	<header class="w-full bg-top bg-cover relative">
 		<div class="overlay w-full h-full bg-secondarycolor bg-opacity-50">
@@ -22,7 +22,9 @@
 			<button
 				@click="addPlayer"
 				class="text-white bg-maincolor w-full max-w-[200px] capitalize block font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
-			></button>
+			>
+				join
+			</button>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<div
 					class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700"
@@ -102,6 +104,7 @@
 					>
 						<li class="w-full">
 							<button
+								@click="tabs"
 								id="description-tab"
 								data-tabs-target="#description"
 								type="button"
@@ -115,6 +118,7 @@
 						</li>
 						<li class="w-full">
 							<button
+								@click="tabs"
 								id="prizes-tab"
 								data-tabs-target="#prizes"
 								type="button"
@@ -128,6 +132,7 @@
 						</li>
 						<li class="w-full">
 							<button
+								@click="tabs"
 								id="notes-tab"
 								data-tabs-target="#notes"
 								type="button"
@@ -150,6 +155,7 @@
 							role="tabpanel"
 							aria-labelledby="description-tab"
 						>
+							Description
 							{{ tournament.description }}
 						</div>
 						<div
@@ -158,6 +164,7 @@
 							role="tabpanel"
 							aria-labelledby="prizes-tab"
 						>
+							prizes
 							{{ tournament.prizes }}
 						</div>
 						<div
@@ -166,6 +173,8 @@
 							role="tabpanel"
 							aria-labelledby="notes-tab"
 						>
+							notes
+
 							{{ tournament.notes }}
 						</div>
 					</div>
@@ -176,7 +185,17 @@
 </template>
 
 <script setup>
-console.log(useRoute());
+function tabs(e) {
+	document.querySelectorAll("[role=tabpanel]").forEach((e) => {
+		console.log(e);
+		e.classList.add("hidden");
+	});
+
+	document
+		.querySelector(`[aria-labelledby=${e.target.id}]`)
+		.classList.remove("hidden");
+}
+// console.log(useRoute());
 const user = useSupabaseUser();
 console.log(user.value);
 const tournament = ref();
@@ -184,7 +203,7 @@ const players = ref();
 
 await $fetch("/api/tournaments").then((response) => {
 	console.log(response);
-
+	//
 	tournament.value = response.tournaments[0];
 });
 
@@ -203,7 +222,7 @@ async function addPlayer() {
 	await $fetch("/api/players", {
 		method: "POST",
 		body: {
-			name: user.value.email,
+			name: user.value.user_metadata.username,
 			tournament_id: tournament.value.id,
 		},
 	}).then((response) => {

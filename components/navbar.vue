@@ -160,6 +160,8 @@ const user = useSupabaseUser();
 const supabase = useSupabaseClient();
 
 function signOut() {
+	menu.value = false;
+
 	console.log("signout");
 	supabase.auth.signOut();
 	navigateTo("/");
