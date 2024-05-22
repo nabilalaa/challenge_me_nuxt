@@ -35,6 +35,7 @@
 						Tournament Participants
 					</h5>
 					<div class="flow-root">
+						{{ players.players }}
 						<ul
 							role="list"
 							class="divide-y divide-gray-200 dark:divide-gray-700"
@@ -77,12 +78,14 @@
 						<ul class="flex w-40 border-0 m-auto -space-x-px text-sm p-4">
 							<li>
 								<a
+									@click="prevPlayers"
 									class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 									>Previous</a
 								>
 							</li>
 							<li>
 								<a
+									@click="nextPlayers"
 									class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
 									>Next</a
 								>
@@ -187,7 +190,6 @@
 <script setup>
 function tabs(e) {
 	document.querySelectorAll("[role=tabpanel]").forEach((e) => {
-		console.log(e);
 		e.classList.add("hidden");
 	});
 
@@ -196,26 +198,59 @@ function tabs(e) {
 		.classList.remove("hidden");
 }
 // console.log(useRoute());
+const supabase = useSupabaseClient();
+let from = 0;
+let to = 2;
 const user = useSupabaseUser();
-console.log(user.value);
+// console.log(user.value);
 const tournament = ref();
-const players = ref();
+let players = ref([]);
+let currentPage = ref(1);
+const countt = ref();
 
 await $fetch("/api/tournaments").then((response) => {
-	console.log(response);
+	// console.log(response);
 	//
 	tournament.value = response.tournaments[0];
 });
 
-await $fetch("/api/players").then((response) => {
-	console.log(response.players);
+const { data } = await useFetch(
+	"https://challenge-me-f3x4.onrender.com/api/players?page=1"
+);
+players.value = data.value;
 
-	// response.filter((ele) => {
-	// 	ele.tou;
-	// });
+// console.log(players.value);
+let page = 1;
 
-	players.value = response.players;
-});
+async function nextPlayers() {
+	// page++;
+
+	// const { data } = await useFetch(
+	// 	`https://challenge-me-f3x4.onrender.com/api/players?page=${page}`
+	// );
+	if (countt.value > to) {
+		from += 3;
+		to += 3;
+		getplayers(from, to);
+
+		// players.value = data.value;
+	}
+}
+// console.log(nextPlayers());
+
+async function prevPlayers() {
+	if (from !== 0) {
+		from -= 3;
+		to -= 3;
+		getplayers(from, to);
+
+		// page--;
+		// const { data } = await useFetch(
+		// 	`https://challenge-me-f3x4.onrender.com/api/players?page=${page}`
+		// );
+		// players.value = data.value;
+	}
+}
 
 // console.log(user.value)
 async function addPlayer() {
@@ -229,4 +264,31 @@ async function addPlayer() {
 		console.log(response);
 	});
 }
+
+onMounted(async () => {
+	await getplayers(from, to);
+	await countplayers();
+});
+// const fetchItems = async () => {
+async function countplayers() {
+	const { data, error } = await supabase.from("challenge_me_player").select();
+
+	countt.value = data.length;
+	console.log(countt.value);
+}
+async function getplayers(from, to) {
+	const { pending, data, error } = await supabase
+		.from("challenge_me_player")
+		.select()
+		.range(from, to);
+	if (error) {
+		console.log(error);
+	} else {
+		console.log(from, to);
+		players.value = data;
+		console.log(countt);
+	}
+}
+
+// };
 </script>
