@@ -23,7 +23,7 @@
 				@click="addPlayer"
 				class="text-white bg-maincolor w-full max-w-[200px] capitalize block font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
 			>
-				join
+				{{ status }}
 			</button>
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
 				<div
@@ -204,9 +204,10 @@ let to = 2;
 const user = useSupabaseUser();
 // console.log(user.value);
 const tournament = ref();
-let players = ref([]);
+// let players = ref([]);
 let currentPage = ref(1);
 const countt = ref();
+const status = ref();
 
 await $fetch("/api/tournaments").then((response) => {
 	// console.log(response);
@@ -251,19 +252,51 @@ async function prevPlayers() {
 	}
 }
 
-console.log(user.value);
+const { data: players } = await useLazyFetch("/api/players", {
+	fetchOnServer: false,
+	server: false,
+});
+
+const message = players.value.players.filter((e) => {
+	// console.log(e.name);
+	return e.name === user.value.user_metadata.username;
+	// if (e.name == user.value.user_metadata.username) {
+	// }
+});
+console.log(message);
+
 async function addPlayer() {
-	const data = await useFetch("/api/players", {
-		method: "post",
-		body: {
-			name: user.value.user_metadata.username,
-			tournament_id: tournament.value.id,
-		},
-	});
-	console.log(data.data);
+	if (message.length == 0) {
+		const data = await useFetch("/api/players", {
+			method: "post",
+			body: {
+				name: user.value.user_metadata.username,
+				tournament_id: tournament.value.id,
+			},
+		});
+		status.value = "leave";
+		await getplayers(from, to);
+
+		console.log(data.data);
+	} else {
+		const data = await useFetch("/api/players", {
+			method: "delete",
+			body: {
+				name: user.value.user_metadata.username,
+			},
+		});
+		await getplayers(from, to);
+		status.value = "join";
+		console.log(data.data);
+	}
 }
 
 onMounted(async () => {
+	if (message.length == 0) {
+		status.value = "join";
+	} else {
+		status.value = "leave";
+	}
 	await getplayers(from, to);
 	await countplayers();
 });
@@ -272,7 +305,6 @@ async function countplayers() {
 	const { data, error } = await supabase.from("challenge_me_player").select();
 
 	countt.value = data.length;
-	console.log(countt.value);
 }
 async function getplayers(from, to) {
 	const { pending, data, error } = await supabase
@@ -282,9 +314,7 @@ async function getplayers(from, to) {
 	if (error) {
 		console.log(error);
 	} else {
-		console.log(from, to);
 		players.value = data;
-		console.log(countt);
 	}
 }
 

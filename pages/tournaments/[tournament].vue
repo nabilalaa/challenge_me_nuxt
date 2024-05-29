@@ -24,8 +24,6 @@
 
 	<section class="py-28">
 		<div class="container">
-			{{ tour }}
-
 			<div
 				v-if="tournaments.length !== 0"
 				class="grid lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4"
@@ -54,7 +52,6 @@
 							Here are the biggest enterprise technology acquisitions of 2021 so
 							far, in reverse chronological order.
 						</p>
-						{{ tournament.notes }}
 						<NuxtLink
 							:to="'/tournament_participants/ ' + tournament.name"
 							class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-maincolor rounded-lg hover:bg-secondarycolor focus:ring-4 focus:outline-none focus:ring-thirdcolor dark:bg-blue-600 dark:hover:bg-maincolor dark:focus:ring-secbg-secondarycolor"
@@ -98,39 +95,18 @@ if (user.value == null) {
 }
 const runtimeConfig = useRuntimeConfig();
 
-// const game_id = "";
-// const game = ref([]);
-// console.log(game.value);
-// console.log(game_name);
-// await $fetch("/api/games").then((response) => {
-// 	var getgame = response.games.find((g) => {
-// 		// console.log(game_name, g.name);
-
-// 		return game_name === g.name;
-// 	});
-// 	game.value = getgame;
-// });
-
 const { data: games } = await useFetch("/api/games");
 
 let game_id = games.value.games.find((e) => {
-	// console.log(e.id);
-	return e.id;
+	return e.name === useRoute().params.tournament;
 });
-
 let game = games.value.games.find((e) => {
-	console.log(e.name);
 	return e.name === useRoute().params.tournament;
 });
 
-console.log(game);
-
 const { data: tournament } = await useFetch("/api/tournaments");
-// console.log(data.value.tournaments);
-// tournaments.value = tour;
+
 let tournaments = tournament.value.tournaments.filter((e) => {
 	return e.game_id == game_id.id;
 });
-console.log(tournaments);
-// tournaments.value = tour;
 </script>

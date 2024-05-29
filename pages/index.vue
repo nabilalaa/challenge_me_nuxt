@@ -3,7 +3,7 @@
 	<div
 		v-if="messageSignIn"
 		id="toast-default"
-		class="absolute top-0 left-2/4 flex items-center mb-8 w-full p-4 rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+		class="absolute top-0 left-2/4 flex items-center mb-8 w-96 p-4 rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
 		:class="message_color"
 		role="alert"
 	>
@@ -95,6 +95,7 @@
 							{{ messageSignUp }}
 						</div>
 						<button
+							@click="messageSignUp = ''"
 							type="button"
 							class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
 							data-dismiss-target="#toast-default"
@@ -448,6 +449,8 @@ const user_sign_up = ref({
 	confirm_password: null,
 });
 
+console.log(user_sign_up);
+
 const user_sign_in = ref({
 	email: null,
 	password: null,
@@ -461,8 +464,8 @@ const sign_up = async () => {
 	}).then((response) => {
 		console.log(response);
 		if (response.error) {
-			messageSignUp.value = response.error.message;
-			console.log(response);
+			messageSignUp.value = response.error.code;
+			console.log(messageSignUp);
 			message_color.value = "text-red-500 bg-red-50";
 		} else {
 			messageSignUp.value = "sign up has been sucessfully";
