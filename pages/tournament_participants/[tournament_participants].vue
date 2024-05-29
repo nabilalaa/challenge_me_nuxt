@@ -214,10 +214,9 @@ await $fetch("/api/tournaments").then((response) => {
 	tournament.value = response.tournaments[0];
 });
 
-const { data } = await useFetch(
-	"https://challenge-me-f3x4.onrender.com/api/players?page=1"
-);
-players.value = data.value;
+// const { data } = await useFetch(
+// 	"https://challenge-me-f3x4.onrender.com/api/players?page=1"
+// );
 
 // console.log(players.value);
 let page = 1;
@@ -252,17 +251,16 @@ async function prevPlayers() {
 	}
 }
 
-// console.log(user.value)
+console.log(user.value);
 async function addPlayer() {
-	await $fetch("/api/players", {
-		method: "POST",
+	const data = await useFetch("/api/players", {
+		method: "post",
 		body: {
 			name: user.value.user_metadata.username,
 			tournament_id: tournament.value.id,
 		},
-	}).then((response) => {
-		console.log(response);
 	});
+	console.log(data.data);
 }
 
 onMounted(async () => {

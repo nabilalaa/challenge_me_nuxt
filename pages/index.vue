@@ -1,5 +1,40 @@
 <template>
 	<Header></Header>
+	<div
+		v-if="messageSignIn"
+		id="toast-default"
+		class="absolute top-0 left-2/4 flex items-center mb-8 w-full p-4 rounded-lg shadow dark:text-gray-400 dark:bg-gray-800"
+		:class="message_color"
+		role="alert"
+	>
+		<div class="ml-3 text-sm font-normal">
+			{{ messageSignIn }}
+		</div>
+		<button
+			@click="messageSignIn = ''"
+			type="button"
+			class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+			data-dismiss-target="#toast-default"
+			aria-label="Close"
+		>
+			<span class="sr-only">Close</span>
+			<svg
+				class="w-3 h-3"
+				aria-hidden="true"
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 14 14"
+			>
+				<path
+					stroke="currentColor"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+				/>
+			</svg>
+		</button>
+	</div>
 	<!-- start tournaments-section -->
 	<section class="bg-maincolor py-28" id="tournaments">
 		<div class="container">
@@ -255,7 +290,7 @@
 				<div class="about-inner w-full">
 					<h3>frequently asked questions about our site</h3>
 					<div class="questions mb-8">
-						<h4 class="flex justify-between">
+						<h4 id="q1" @click="tabs" class="flex justify-between">
 							Frequently Asked Question one
 							<svg
 								class="w-6 h-6 text-gray-800 dark:text-white"
@@ -273,14 +308,14 @@
 								/>
 							</svg>
 						</h4>
-						<p class="max-w-lg">
+						<p aria-labelledby="q1" class="max-w-lg">
 							Quia iusto hic ipsam assumenda itaque exercitationem debitis
 							sapiente, inventore nemo molestiae Quia iusto hic ipsam assumenda
 							itaque exercitationem debitis sapiente, inventore nemo molestiae
 						</p>
 					</div>
 					<div class="questions mb-8">
-						<h4 class="flex justify-between">
+						<h4 id="q2" @click="tabs" class="flex justify-between">
 							Frequently Asked Question two
 							<svg
 								class="w-6 h-6 text-gray-800 dark:text-white"
@@ -298,14 +333,14 @@
 								/>
 							</svg>
 						</h4>
-						<p class="max-w-lg">
+						<p aria-labelledby="q2" class="max-w-lg">
 							Quia iusto hic ipsam assumenda itaque exercitationem debitis
 							sapiente, inventore nemo molestiae Quia iusto hic ipsam assumenda
 							itaque exercitationem debitis sapiente, inventore nemo molestiae
 						</p>
 					</div>
 					<div class="questions mb-8">
-						<h4 class="flex justify-between">
+						<h4 id="q3" @click="tabs" class="flex justify-between">
 							Frequently Asked Question three
 							<svg
 								class="w-6 h-6 text-gray-800 dark:text-white"
@@ -323,14 +358,14 @@
 								/>
 							</svg>
 						</h4>
-						<p class="max-w-lg">
+						<p aria-labelledby="q3" class="max-w-lg">
 							Quia iusto hic ipsam assumenda itaque exercitationem debitis
 							sapiente, inventore nemo molestiae Quia iusto hic ipsam assumenda
 							itaque exercitationem debitis sapiente, inventore nemo molestiae
 						</p>
 					</div>
 					<div class="questions mb-8">
-						<h4 class="flex justify-between">
+						<h4 id="q4" @click="tabs" class="flex justify-between">
 							Frequently Asked Question four
 							<svg
 								class="w-6 h-6 text-gray-800 dark:text-white"
@@ -348,14 +383,14 @@
 								/>
 							</svg>
 						</h4>
-						<p class="max-w-lg">
+						<p aria-labelledby="q4" class="max-w-lg">
 							Quia iusto hic ipsam assumenda itaque exercitationem debitis
 							sapiente, inventore nemo molestiae Quia iusto hic ipsam assumenda
 							itaque exercitationem debitis sapiente, inventore nemo molestiae
 						</p>
 					</div>
 					<div class="questions mb-8">
-						<h4 class="flex justify-between">
+						<h4 id="q5" @click="tabs" class="flex justify-between">
 							Frequently Asked Question five
 							<svg
 								class="w-6 h-6 text-gray-800 dark:text-white"
@@ -373,7 +408,7 @@
 								/>
 							</svg>
 						</h4>
-						<p class="max-w-lg">
+						<p aria-labelledby="q5" class="max-w-lg">
 							Quia iusto hic ipsam assumenda itaque exercitationem debitis
 							sapiente, inventore nemo molestiae Quia iusto hic ipsam assumenda
 							itaque exercitationem debitis sapiente, inventore nemo molestiae
@@ -400,6 +435,7 @@ const message_color = ref("");
 const runtimeConfig = useRuntimeConfig();
 const image = ref("");
 const games = ref(null);
+let openask = ref(false);
 await $fetch("/api/games", {}).then((response) => {
 	games.value = response.games;
 	console.log(response);
@@ -451,4 +487,21 @@ const sign_in = async () => {
 		message_color.value = "text-red-500 bg-red-50";
 	}
 };
+onMounted(() => {
+	document.querySelectorAll(".max-w-lg").forEach((e) => {
+		e.classList.add("hidden");
+	});
+	document.querySelector("[aria-labelledby=q1]").classList.remove("hidden");
+});
+
+function tabs(e) {
+	console.log(e.target.id);
+	document.querySelectorAll(".max-w-lg").forEach((e) => {
+		e.classList.add("hidden");
+	});
+
+	document
+		.querySelector(`[aria-labelledby=${e.target.id}]`)
+		.classList.remove("hidden");
+}
 </script>

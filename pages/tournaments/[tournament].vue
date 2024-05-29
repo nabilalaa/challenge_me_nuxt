@@ -1,5 +1,4 @@
 <template>
-	<!--  -->
 	<header
 		:style="{
 			backgroundImage: `url(${
@@ -25,6 +24,8 @@
 
 	<section class="py-28">
 		<div class="container">
+			{{ tour }}
+
 			<div
 				v-if="tournaments.length !== 0"
 				class="grid lg:grid-cols-3 xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4"
@@ -34,7 +35,15 @@
 					:key="tournament"
 					class="max-w-sm m-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
 				>
-					<img class="rounded-t-lg" src="https://placehold.co/600x400" alt="" />
+					<img
+						class="rounded-t-lg"
+						:src="
+							tournament.photo_game
+								? tournament.photo_game
+								: 'https://placehold.co/600x400'
+						"
+						alt=""
+					/>
 					<div class="p-5">
 						<h5
 							class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
@@ -81,30 +90,47 @@
 </template>
 
 <script setup>
-console.log(useRouter());
+// console.log(useRouter());
 const user = useSupabaseUser();
-console.log(user.value);
+// console.log(user.value);
 if (user.value == null) {
 	navigateTo("/");
 }
 const runtimeConfig = useRuntimeConfig();
 
-const tournaments = ref([]);
-const game_name = useRoute().params.tournament;
-const game = ref([]);
-console.log(game.value);
-console.log(game_name);
-await $fetch("/api/games").then((response) => {
-	var getgame = response.games.find((g) => {
-		console.log(game_name, g.name);
-		return game_name === g.name;
-	});
-	game.value = getgame;
+// const game_id = "";
+// const game = ref([]);
+// console.log(game.value);
+// console.log(game_name);
+// await $fetch("/api/games").then((response) => {
+// 	var getgame = response.games.find((g) => {
+// 		// console.log(game_name, g.name);
+
+// 		return game_name === g.name;
+// 	});
+// 	game.value = getgame;
+// });
+
+const { data: games } = await useFetch("/api/games");
+
+let game_id = games.value.games.find((e) => {
+	// console.log(e.id);
+	return e.id;
 });
 
-await $fetch("/api/tournaments").then((response) => {
-	console.log(response.tournaments);
-
-	tournaments.value = response.tournaments;
+let game = games.value.games.find((e) => {
+	console.log(e.name);
+	return e.name === useRoute().params.tournament;
 });
+
+console.log(game);
+
+const { data: tournament } = await useFetch("/api/tournaments");
+// console.log(data.value.tournaments);
+// tournaments.value = tour;
+let tournaments = tournament.value.tournaments.filter((e) => {
+	return e.game_id == game_id.id;
+});
+console.log(tournaments);
+// tournaments.value = tour;
 </script>

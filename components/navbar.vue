@@ -172,14 +172,16 @@ function toggleMenu() {
 }
 
 onMounted(() => {
-	document.addEventListener("click", (e) => {
-		if (
-			!document.querySelector(".dropdownMenu").contains(e.target) &&
-			!document.querySelector("#btnUserMenu").contains(e.target)
-		) {
-			menu.value = false;
-		}
-	});
+	if (document.querySelector("#btnUserMenu")) {
+		document.addEventListener("click", (e) => {
+			if (
+				!document.querySelector(".dropdownMenu").contains(e.target) &&
+				!document.querySelector("#btnUserMenu").contains(e.target)
+			) {
+				menu.value = false;
+			}
+		});
+	}
 });
 
 // document.querySelector("#navbar-btn").addEventListener("click", () => {
