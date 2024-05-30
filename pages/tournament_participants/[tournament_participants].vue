@@ -252,20 +252,20 @@ async function prevPlayers() {
 	}
 }
 
-const { data: players } = await useLazyFetch("/api/players", {
-	fetchOnServer: false,
-	server: false,
-});
+const { data: players } = await useLazyFetch("/api/players", {});
 
-const message = players.value.players.filter((e) => {
-	// console.log(e.name);
-	return e.name === user.value.user_metadata.username;
-	// if (e.name == user.value.user_metadata.username) {
-	// }
-});
-console.log(message);
+console.log(user.value.user_metadata.username);
+const message = players.value.players.filter(
+	(e) => e.name === user.value.user_metadata.username
+);
 
 async function addPlayer() {
+	const { data: players } = await useLazyFetch("/api/players", {});
+
+	console.log(user.value.user_metadata.username);
+	const message = players.value.players.filter(
+		(e) => e.name === user.value.user_metadata.username
+	);
 	if (message.length == 0) {
 		const data = await useFetch("/api/players", {
 			method: "post",
@@ -275,9 +275,9 @@ async function addPlayer() {
 			},
 		});
 		status.value = "leave";
-		await getplayers(from, to);
+		await useLazyFetch("/api/players", {});
 
-		console.log(data.data);
+		await getplayers(from, to);
 	} else {
 		const data = await useFetch("/api/players", {
 			method: "delete",
@@ -287,17 +287,17 @@ async function addPlayer() {
 		});
 		await getplayers(from, to);
 		status.value = "join";
-		console.log(data.data);
 	}
 }
 
 onMounted(async () => {
+	await getplayers(from, to);
+
 	if (message.length == 0) {
 		status.value = "join";
 	} else {
 		status.value = "leave";
 	}
-	await getplayers(from, to);
 	await countplayers();
 });
 // const fetchItems = async () => {
@@ -307,7 +307,7 @@ async function countplayers() {
 	countt.value = data.length;
 }
 async function getplayers(from, to) {
-	const { pending, data, error } = await supabase
+	const { data, error } = await supabase
 		.from("challenge_me_player")
 		.select()
 		.range(from, to);
@@ -317,6 +317,4 @@ async function getplayers(from, to) {
 		players.value = data;
 	}
 }
-
-// };
 </script>
